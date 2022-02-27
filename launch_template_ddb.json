@@ -1,0 +1,69 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "UserDataContent": {
+      "Description": "User data content",
+      "Type": "String"
+    },
+    "Resources": {
+      "URLsRegistryDDB": {
+        "Type": "AWS::DynamoDB::Table",
+        "Properties": {
+          "AttributeDefinitions": [
+            {
+              "AttributeName": "url",
+              "AttributeType": "S"
+            },
+            {
+              "AttributeName": "added_at",
+              "AttributeType": "S"
+            }
+          ],
+          "KeySchema": [
+            {
+              "AttributeName": "url",
+              "KeyType": "HASH"
+            },
+            {
+              "AttributeName": "added_at",
+              "KeyType": "RANGE"
+            }
+          ]
+        }
+      },
+      "ExampleEc2Instance": {
+        "Type": "AWS::EC2::Instance",
+        "Properties": {
+          "InstanceType": "t2.micro",
+          "ImageId": "ami-0015a39e4b7c0966f"
+        }
+      },
+      "EC2LT": {
+        "Parameters": {
+          "LambdaFunctionName": {
+            "Description": "Lambda Function name",
+            "Type": "String"
+          },
+          "Type": "AWS::EC2::LaunchTemplate",
+          "Properties": {
+            "LaunchTemplateData": {
+              "ImageId": "ami-0015a39e4b7c0966f",
+              "InstanceMarketOptions": {
+                "MarketType": "spot",
+                "SpotOptions": {
+                  "BlockDurationMinutes": 60,
+                  "MaxPrice": "0.01"
+                }
+              },
+              "InstanceType": "t2.micro",
+              "UserData": {
+                "Ref": "UserDataContent"
+              }
+            },
+            "LaunchTemplateName": "myLT"
+          }
+        }
+      }
+    }
+  }
+}
