@@ -1,0 +1,39 @@
+{
+  "Resources": {
+    "EC2SG": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "SSH Security Group",
+        "GroupName": "SSH-SG",
+        "SecurityGroupIngress": [
+          {
+            "FromPort": 22,
+            "ToPort": 22,
+            "IpProtocol": "tcp",
+            "CidrIp" : "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "EC2LT": {
+      "Type": "AWS::EC2::LaunchTemplate",
+      "Properties": {
+        "LaunchTemplateData": {
+          "ImageId": "ami-0015a39e4b7c0966f",
+          "InstanceMarketOptions": {
+            "MarketType": "spot",
+            "SpotOptions": {
+              "MaxPrice": "0.01"
+            }
+          },
+          "InstanceType": "t2.micro",
+          "SecurityGroups": [
+            "SSH-SG"
+          ],
+          "UserData": "IyEvYmluL3NoCndnZXQgaHR0cHM6Ly9teXJ1c3NpYWJ1Y2tldC5zMy5ldS1jZW50cmFsLTEuYW1hem9uYXdzLmNvbS9zY3JpcHQKc3VkbyBzaCBzY3JpcHQKZm9yIGkgaW4gezEuLjJ9OyBkbyBzdWRvIGRvY2tlciBydW4gIGFscGluZS9ib21iYXJkaWVyIC1jIDEwMDAgLWQgNjBzIC1sIGh0dHBzOi8vd3d3LnRpbmtvZmYucnUvYnVzaW5lc3MvcHJvY3VyZW1lbnQvICYmIHNsZWVwIDU7IGRvbmU="
+        },
+        "LaunchTemplateName": "myLT"
+      }
+    }
+  }
+}
